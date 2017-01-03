@@ -4,18 +4,24 @@ import pickle
 import sqlite3
 import os
 import numpy as np
+from models import db, Review
 
 # import HashingVectorizer from local dir
 from vectorizer import vect
 
 app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/nlp'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+db.init_app(app)
 
 ######## Preparing the Classifier
 cur_dir = os.path.dirname(__file__)
 clf = pickle.load(open(os.path.join(cur_dir,
                  'pkl_objects',
                  'classifier.pkl'), 'rb'))
-db = os.path.join(cur_dir, 'reviews.sqlite')
+# db = os.path.join(cur_dir, 'reviews.sqlite')
 
 def classify(document):
     label = {0: 'negative', 1: 'positive'}
@@ -62,15 +68,18 @@ def results():
 @app.route('/thanks', methods=['POST'])
 def feedback():
     feedback = request.form['feedback_button']
-    review = request.form['review']
+    review_text = request.form['review']
     prediction = request.form['prediction']
 
     inv_label = {'negative': 0, 'positive': 1}
     y = inv_label[prediction]
     if feedback == 'Incorrect':
         y = int(not(y))
-    train(review, y)
-    sqlite_entry(db, review, y)
+    # train(review_text, y)
+    # sqlite_entry(db, review, y)
+    review = Review(review_text, y)
+    db.session.add(review)
+    db.session.commit()
     return render_template('thanks.html')
 
 if __name__ == '__main__':

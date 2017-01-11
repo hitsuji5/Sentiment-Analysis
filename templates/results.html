@@ -1,24 +1,36 @@
 <!doctype html>
 <html>
   <head>
-    <title>Movie Classification</title>
+    <title>Tweet Sentiment Analysis</title>
 	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
 
-<h3>Your movie review:</h3>
-<div>{{ content }}</div>
+<h3>Search words: {{ word }}</h3>
+<table border="1">
+    <tr><th>Date</th>
+    <th>Tweet Text</th>
+    <th>Score</th>
+    </tr>
+    {% for tweet in tweets %}
+    <tr>
+    <td>{{ tweet[0] }}</td>
+    <td>{{ tweet[1] }}</td>
+    <td>{{ tweet[2] }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
-<h3>Prediction:</h3>
-<div>This movie review is <strong>{{ prediction }}</strong>
-	 (probability: {{ probability }}%).</div>
+<!--<h3>Prediction:</h3>-->
+<!--<div>This movie review is <strong>{{ prediction }}</strong>-->
+	 <!--(probability: {{ probability }}%).</div>-->
 
 <div id='button'>
 	  <form action="/thanks" method="post">
 	    <input type=submit value='Correct' name='feedback_button'>
 		<input type=submit value='Incorrect' name='feedback_button'>
 		<input type=hidden value='{{ prediction }}' name='prediction'>
-		<input type=hidden value='{{ content }}' name='review'>
+		<input type=hidden value='{{ word }}' name='word'>
 	  </form>
 </div>
 

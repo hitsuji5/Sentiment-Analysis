@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-import datetime
+# import datetime
 db = SQLAlchemy()
 
 class Review(db.Model):

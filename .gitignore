@@ -2,3 +2,5 @@
 .DS_Store
 .idea/
 venv/
+twitter_api.json
+.ipynb_checkpoints/
